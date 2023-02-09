@@ -8,9 +8,7 @@ Link: https://erickimai.github.io/Tic-Tac-Toe/
 
 - The importance of pre-planning
 - Refactoring code
-- transition animations
-- factory functions + modular functions
-- Learned deeper responsive mobile design
+- Factory functions + modular functions
 - adding bots
 
 ## Outcome of Project
