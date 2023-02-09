@@ -177,7 +177,7 @@ function minimax(board, depth, isMax) {
       for (let j = 0; j < 3; j++) {
         if (board[i][j] !== "X" && board[i][j] !== "O") {
           const temp = board[i][j];
-          board[i][j] = players.opponent;
+          board[i][j] = players.player;
           best = Math.max(best, minimax(board, depth + 1, !isMax));
           board[i][j] = temp;
         }
@@ -190,7 +190,7 @@ function minimax(board, depth, isMax) {
     for (let j = 0; j < 3; j++) {
       if (board[i][j] !== "X" && board[i][j] !== "O") {
         const temp = board[i][j];
-        board[i][j] = players.player;
+        board[i][j] = players.opponent;
         best = Math.min(best, minimax(board, depth + 1, !isMax));
         board[i][j] = temp;
       }
@@ -219,6 +219,5 @@ function findBestMove(board) {
       }
     }
   }
-  console.log(bestMove.row, bestMove.col);
   return bestMove;
 }
