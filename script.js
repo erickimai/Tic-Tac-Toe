@@ -11,7 +11,10 @@ function newGame() {
   const buttons = document.getElementsByClassName("grid");
   for (let i = 0; i < buttons.length; i += 1) {
     buttons[i].innerText = "";
+    buttons[i].classList.remove("clicked");
   }
+  newBoard = gameBoard();
+  console.log(newBoard.b);
 }
 
 class Move {
@@ -44,11 +47,7 @@ const players = (() => {
   return { player, opponent };
 })();
 
-const newBoard = gameBoard();
-
-function updateBoard(column, row, mark) {
-  newBoard.b[row][column] = mark;
-}
+let newBoard = gameBoard();
 
 const showWinner = (status) => {
   document.querySelector("h2").innerText = `${status}`;
@@ -58,24 +57,24 @@ const showWinner = (status) => {
   closeModal.addEventListener("click", () => {
     modal.close();
     newGame();
+    newBoard = gameBoard();
   });
 };
 
 function isMovesLeft(board) {
   for (let i = 0; i < 3; i++)
-    for (let j = 0; j < 3; j++) if (board[i][j] == "_") return true;
+    for (let j = 0; j < 3; j++)
+      if (board[i][j] !== "X" && board[i][j] !== "O") return true;
   return false;
 }
 
-function checkWin(b) {
+function evaluate(b) {
   for (let row = 0; row < 3; row += 1) {
     if (b[row][0] === b[row][1] && b[row][1] === b[row][2]) {
       if (b[row][0] === players.player) {
-        showWinner("You Won!");
         return +10;
       }
       if (b[row][0] === players.opponent) {
-        showWinner("You Lost!");
         return -10;
       }
     }
@@ -83,60 +82,92 @@ function checkWin(b) {
   for (let col = 0; col < 3; col += 1) {
     if (b[0][col] === b[1][col] && b[1][col] === b[2][col]) {
       if (b[0][col] === players.player) {
-        showWinner("You Won!");
         return +10;
       }
       if (b[0][col] === players.opponent) {
-        showWinner("You Lost!");
         return -10;
       }
     }
   }
   if (b[0][0] === b[1][1] && b[1][1] === b[2][2]) {
     if (b[0][0] === players.player) {
-      showWinner("You Won!");
       return +10;
     }
     if (b[0][0] === players.opponent) {
-      showWinner("You Lost!");
       return -10;
     }
   }
   if (b[0][2] === b[1][1] && b[1][1] === b[2][0]) {
     if (b[0][2] === players.player) {
-      showWinner("You Won!");
       return +10;
     }
     if (b[0][2] === players.opponent) {
-      showWinner("You Lost!");
       return -10;
     }
   }
   return 0;
 }
 
+function checkWin() {
+  if (evaluate(newBoard.b) === 10) {
+    showWinner("You won!");
+    return true;
+  }
+  if (evaluate(newBoard.b) === -10) {
+    showWinner("You lost!");
+    return true;
+  }
+  if (!isMovesLeft(newBoard.b)) {
+    showWinner("Draw!");
+    return true;
+  }
+  return false;
+}
+
 const clickButton = (() => {
   const buttons = document.querySelectorAll("button.grid");
   buttons.forEach((button) =>
     addEventListener("click", (e) => {
-      if (e.target === button) {
+      if (e.target === button && !e.target.classList.contains("clicked")) {
         e.target.innerText = players.player;
+        e.target.classList.add("clicked");
         updateBoard(
           e.target.dataset.column,
           e.target.dataset.row,
           players.player
         );
-        const bestMove = findBestMove(newBoard.b);
-        updateBoard(bestMove.col, bestMove.row, players.opponent);
-        console.log(newBoard.b);
+        if (!checkWin() && isMovesLeft(newBoard.b)) opponentMove();
+        checkWin();
       }
     })
   );
-  return { buttons };
 })();
 
+function updateBoard(column, row, mark) {
+  newBoard.b[row][column] = mark;
+}
+
+function opponentMove() {
+  const tempBoard = [
+    ["_", "_", "_"],
+    ["_", "_", "_"],
+    ["_", "_", "_"],
+  ];
+  for (let i = 0; i < 3; i += 1) {
+    for (let j = 0; j < 3; j += 1) {
+      if (newBoard.b[i][j] === "X") tempBoard[i][j] = "O";
+      else if (newBoard.b[i][j] === "O") tempBoard[i][j] = "X";
+    }
+  }
+  const bestMove = findBestMove(tempBoard);
+  const grid = document.getElementsByClassName("grid");
+  updateBoard(bestMove.col, bestMove.row, players.opponent);
+  grid[3 * bestMove.row + bestMove.col].innerText = players.opponent;
+  grid[3 * bestMove.row + bestMove.col].classList.add("clicked");
+}
+
 function minimax(board, depth, isMax) {
-  const score = checkWin(board);
+  const score = evaluate(board);
   if (score == 10) return score;
   if (score == -10) return score;
   if (isMovesLeft(board) == false) return 0;
@@ -146,7 +177,7 @@ function minimax(board, depth, isMax) {
       for (let j = 0; j < 3; j++) {
         if (board[i][j] !== "X" && board[i][j] !== "O") {
           const temp = board[i][j];
-          board[i][j] = players.player;
+          board[i][j] = players.opponent;
           best = Math.max(best, minimax(board, depth + 1, !isMax));
           board[i][j] = temp;
         }
@@ -159,7 +190,7 @@ function minimax(board, depth, isMax) {
     for (let j = 0; j < 3; j++) {
       if (board[i][j] !== "X" && board[i][j] !== "O") {
         const temp = board[i][j];
-        board[i][j] = players.opponent;
+        board[i][j] = players.player;
         best = Math.min(best, minimax(board, depth + 1, !isMax));
         board[i][j] = temp;
       }
@@ -188,5 +219,6 @@ function findBestMove(board) {
       }
     }
   }
+  console.log(bestMove.row, bestMove.col);
   return bestMove;
 }
