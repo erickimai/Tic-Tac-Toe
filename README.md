@@ -10,9 +10,7 @@ Link: https://erickimai.github.io/Tic-Tac-Toe/
 - Refactoring code
 - transition animations
 - factory functions + modular functions
-- multi-page
 - Learned deeper responsive mobile design
-- @media query usage
 - adding bots
 
 ## Outcome of Project
