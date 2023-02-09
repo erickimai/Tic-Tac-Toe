@@ -42,6 +42,13 @@ div.chooseX {
   border: solid;
 }
 
+div.chooseX.chosen,
+div.chooseO.chosen {
+  background-color: black;
+  color: #fff;
+  border: #fff solid;
+}
+
 div.chooseO {
   height: 100px;
   width: 100px;
