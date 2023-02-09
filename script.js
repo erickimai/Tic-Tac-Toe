@@ -14,6 +14,7 @@ function newGame() {
     buttons[i].classList.remove("clicked");
   }
   newBoard = gameBoard();
+  if ((players.player = "O")) opponentMove();
 }
 
 class Move {
