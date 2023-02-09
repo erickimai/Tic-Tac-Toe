@@ -14,7 +14,6 @@ function newGame() {
     buttons[i].classList.remove("clicked");
   }
   newBoard = gameBoard();
-  console.log(newBoard.b);
 }
 
 class Move {

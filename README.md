@@ -2,9 +2,7 @@
 
 Link: https://erickimai.github.io/Tic-Tac-Toe/
 
-## Gif
-
-![Alt Text](https://imgur.com/a/GkERWbu)
+![alt text](https://github.com/erickimai/Tic-Tac-Toe/blob/main/image.jpg?raw=true)
 
 ## Skills Learned
 
