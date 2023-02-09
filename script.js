@@ -14,7 +14,10 @@ function newGame() {
     buttons[i].classList.remove("clicked");
   }
   newBoard = gameBoard();
-  if ((players.player = "O")) opponentMove();
+  if (players.player === "O") {
+    opponentMove();
+    updateBoard(0, 0, "X");
+  }
 }
 
 class Move {
@@ -57,7 +60,7 @@ const showWinner = (status) => {
   closeModal.addEventListener("click", () => {
     modal.close();
     newGame();
-    newBoard = gameBoard();
+    // newBoard = gameBoard();
   });
 };
 
